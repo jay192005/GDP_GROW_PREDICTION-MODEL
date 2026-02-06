@@ -163,23 +163,23 @@ export function Dashboard({ onBack }: DashboardProps) {
     setApiError(null);
 
     try {
-      // Construct prediction request
+      // Construct scenario simulation request
       const requestData: apiService.PredictionRequest = {
         Country: selectedCountry,
-        Population: parseFloat(populationGrowth),
-        Exports: parseFloat(exportsGrowth),
-        Imports: parseFloat(importsGrowth),
-        Investment: parseFloat(investment),
-        Consumption: parseFloat(consumption),
-        Govt_Spend: parseFloat(governmentSpending),
+        Population_Growth_Rate: parseFloat(populationGrowth),
+        Exports_Growth_Rate: parseFloat(exportsGrowth),
+        Imports_Growth_Rate: parseFloat(importsGrowth),
+        Investment_Growth_Rate: parseFloat(investment),
+        Consumption_Growth_Rate: parseFloat(consumption),
+        Govt_Spend_Growth_Rate: parseFloat(governmentSpending),
       };
 
       // Call API
       const response = await apiService.submitPrediction(requestData);
 
       // Update prediction state
-      setPrediction(response.growth);
-      setPredictionMethod(response.method);
+      setPrediction(response.predicted_gdp_growth);
+      setPredictionMethod(response.model_type);
 
       // Fetch historical data if not already loaded
       if (historicalData.length === 0 || historicalData.every(d => d.type === 'prediction')) {
@@ -190,7 +190,7 @@ export function Dashboard({ onBack }: DashboardProps) {
 
       // Add prediction to timeline
       const historicalOnly = historicalData.filter(d => d.type === 'historical');
-      const withPrediction = apiService.addPredictionToTimeline(response.growth, historicalOnly);
+      const withPrediction = apiService.addPredictionToTimeline(response.predicted_gdp_growth, historicalOnly);
       setHistoricalData(withPrediction);
 
       // Calculate contribution breakdown

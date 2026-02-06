@@ -15,17 +15,19 @@ export interface HistoricalDataPoint {
 
 export interface PredictionRequest {
   Country: string;
-  Population: number;
-  Exports: number;
-  Imports: number;
-  Investment: number;
-  Consumption: number;
-  Govt_Spend: number;
+  Population_Growth_Rate: number;
+  Exports_Growth_Rate: number;
+  Imports_Growth_Rate: number;
+  Investment_Growth_Rate: number;
+  Consumption_Growth_Rate: number;
+  Govt_Spend_Growth_Rate: number;
 }
 
 export interface PredictionResponse {
-  growth: number;
-  method: 'AI Model' | 'Simulation';
+  predicted_gdp_growth: number;
+  model_type: string;
+  interpretation: string;
+  note: string;
 }
 
 export interface ApiError {
@@ -72,12 +74,12 @@ export async function fetchHistoricalData(country: string): Promise<HistoricalDa
 }
 
 /**
- * Submit prediction request with economic indicators
- * @param data - Prediction request payload
+ * Submit scenario simulation request with economic indicators
+ * @param data - Scenario simulation request payload
  * @returns Promise with prediction response
  */
 export async function submitPrediction(data: PredictionRequest): Promise<PredictionResponse> {
-  const url = `${API_BASE_URL}/predict`;
+  const url = `${API_BASE_URL}/simulate`;
   
   const response = await fetch(url, {
     method: 'POST',
@@ -89,7 +91,7 @@ export async function submitPrediction(data: PredictionRequest): Promise<Predict
   
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.message || `Prediction request failed: ${response.statusText}`);
+    throw new Error(errorData.message || `Scenario simulation failed: ${response.statusText}`);
   }
   
   const result = await response.json();
